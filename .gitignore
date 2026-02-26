@@ -1,0 +1,19 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv/
+venv/
+ENV/
+
+# Generated data and plots (optional: remove these lines to track outputs)
+data/*.csv
+data/*.png
+
+# IDE / OS
+.idea/
+.DS_Store
+*.swp
+*.swo
