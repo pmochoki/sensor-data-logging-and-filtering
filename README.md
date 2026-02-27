@@ -131,6 +131,16 @@ You can customize the behaviour via command‑line options:
   python main.py --low-pass-alpha 0
   ```
 
+- **Control randomness (for repeatable experiments)**
+
+  ```bash
+  # Fixed seed (default is 42)
+  python main.py --seed 123
+
+  # Use a different random seed each run
+  python main.py --seed -1
+  ```
+
 - **Adjust signal characteristics**
 
   ```bash

@@ -1,7 +1,6 @@
 import argparse
 import csv
 import math
-import os
 import random
 from dataclasses import dataclass
 from datetime import datetime
@@ -25,6 +24,7 @@ class SimulationConfig:
     low_pass_alpha: Optional[float]
     amplitude: float
     noise_std: float
+    seed: Optional[int]
 
 
 def ensure_data_dir() -> Path:
@@ -186,6 +186,12 @@ def parse_args() -> SimulationConfig:
         default=0.5,
         help="Standard deviation of Gaussian noise added to the signal.",
     )
+    parser.add_argument(
+        "--seed",
+        type=int,
+        default=42,
+        help="Random seed for reproducible runs. Set to a negative value to use a random seed.",
+    )
 
     args = parser.parse_args()
 
@@ -195,6 +201,12 @@ def parse_args() -> SimulationConfig:
     else:
         low_pass_alpha = min(max(args.low_pass_alpha, 0.0), 1.0)
 
+    seed: Optional[int]
+    if args.seed is not None and args.seed < 0:
+        seed = None
+    else:
+        seed = args.seed
+
     return SimulationConfig(
         sensor_type=args.sensor,
         samples=args.samples,
@@ -203,12 +215,16 @@ def parse_args() -> SimulationConfig:
         low_pass_alpha=low_pass_alpha,
         amplitude=args.amplitude,
         noise_std=args.noise_std,
+        seed=seed,
     )
 
 
 def main() -> None:
     config = parse_args()
     ensure_data_dir()
+
+    if config.seed is not None:
+        random.seed(config.seed)
 
     if config.sensor_type == "temperature":
         times, raw_values = simulate_temperature_signal(config)
@@ -237,7 +253,5 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    # Seed RNG for reproducibility within a single run configuration
-    random.seed(42)
     main()
 
